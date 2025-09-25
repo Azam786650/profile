@@ -1,35 +1,31 @@
-# Use official PHP with Apache
 FROM php:8.2-apache
 
-# Enable required PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql
+# Install PHP extensions
+RUN apt-get update \
+    && apt-get install -y zip unzip libzip-dev \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip
 
-# Enable Apache mod_rewrite
+# Enable mod_rewrite
 RUN a2enmod rewrite
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy composer first
-COPY composer.lock composer.json /var/www/html/
-
-# Install Composer
+# Install composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Install dependencies
-RUN composer install --no-dev --no-scripts --no-interaction
+# Copy composer files and install dependencies
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --prefer-dist --ignore-platform-reqs
 
-# Copy the rest of the application
+# Copy application code
 COPY . /var/www/html
 
-# Set Laravel storage permissions
+# Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Run Laravel scripts
-RUN php artisan config:clear && php artisan cache:clear
+# Clear caches
+RUN php artisan config:clear || true && php artisan cache:clear || true
 
-# Expose port 80
 EXPOSE 80
-
-# Start Apache
 CMD ["apache2-foreground"]
