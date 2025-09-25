@@ -1,11 +1,19 @@
 FROM php:8.2-apache
 
-# Install PHP extensions
+# Install system dependencies & PHP extensions
 RUN apt-get update \
-    && apt-get install -y zip unzip libzip-dev \
-    && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip
+    && apt-get install -y \
+        zip \
+        unzip \
+        libzip-dev \
+        libpq-dev \        # <-- Needed for PostgreSQL
+    && docker-php-ext-install \
+        pdo \
+        pdo_mysql \
+        pdo_pgsql \
+        zip
 
-# Enable mod_rewrite
+# Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
 # Set working directory
@@ -21,10 +29,10 @@ RUN composer install --no-dev --no-interaction --prefer-dist --ignore-platform-r
 # Copy application code
 COPY . /var/www/html
 
-# Set permissions
+# Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Clear caches
+# Clear Laravel caches
 RUN php artisan config:clear || true && php artisan cache:clear || true
 
 EXPOSE 80
