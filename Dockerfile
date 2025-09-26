@@ -1,37 +1,35 @@
-# Use official PHP Apache image
+# Use official PHP-Apache image
 FROM php:8.2-apache
 
-# Install required system packages and PHP extensions
+# Install system dependencies & PHP extensions
 RUN apt-get update && apt-get install -y \
-    zip unzip git curl libpq-dev libzip-dev \
+    git unzip zip libzip-dev libpq-dev \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip \
-    && a2enmod rewrite
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Enable Apache mod_rewrite (needed for Laravel routing)
+RUN a2enmod rewrite
+
+# Copy all application files to /var/www/html
+COPY . /var/www/html
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy composer first (for caching) then install dependencies
-COPY composer.json composer.lock ./
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install --no-dev --no-scripts --no-interaction --optimize-autoloader
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copy the rest of the application
-COPY . .
+# Install PHP dependencies (skip dev for production)
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Set correct permissions for Laravel storage and bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Change Apache DocumentRoot to /public
+RUN sed -i 's#/var/www/html#/var/www/html/public#g' /etc/apache2/sites-available/000-default.conf
 
-# Update Apache to serve Laravel's public directory
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
-
-# Cache Laravel config/routes/views for production
-RUN php artisan config:cache || true
-RUN php artisan route:cache || true
-RUN php artisan view:cache || true
+# Fix permissions for Laravel
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port 80
 EXPOSE 80
 
-# Start Apache
+# Start Apache in the foreground
 CMD ["apache2-foreground"]
