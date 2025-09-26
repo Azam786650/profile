@@ -1,35 +1,34 @@
-# Use official PHP-Apache image
+# Use the official PHP 8.2 image with Apache
 FROM php:8.2-apache
 
-# Install system dependencies & PHP extensions
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
-    git unzip zip libzip-dev libpq-dev \
-    && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    zip \
+    unzip \
+    libzip-dev \
+    && docker-php-ext-install pdo_mysql zip
 
-# Enable Apache mod_rewrite (needed for Laravel routing)
+# Enable Apache mod_rewrite (required for Laravel)
 RUN a2enmod rewrite
 
-# Copy all application files to /var/www/html
-COPY . /var/www/html
-
-# Set working directory
+# Set working directory inside the container
 WORKDIR /var/www/html
 
-# Install Composer
+# Copy composer from official image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Install PHP dependencies (skip dev for production)
+# Copy the application code
+COPY . .
+
+# Install PHP dependencies without dev packages
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Change Apache DocumentRoot to /public
-RUN sed -i 's#/var/www/html#/var/www/html/public#g' /etc/apache2/sites-available/000-default.conf
+# Set permissions for Laravel storage and bootstrap cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Fix permissions for Laravel
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Expose port 80
+# Expose port 80 for Apache
 EXPOSE 80
 
-# Start Apache in the foreground
+# Start Apache server
 CMD ["apache2-foreground"]
