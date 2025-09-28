@@ -24,35 +24,45 @@
 }
 
 .hero {
+  position: relative;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url("{{ asset('storage/background.png') }}") center/cover no-repeat;
-  position: relative;
   text-align: center;
   color: white;
-  padding: 20px;
   overflow: hidden;
 }
 
-.hero::before {
-  content: "";
+/* Video fills entire section */
+.hero-video {
   position: absolute;
-  top: 0; 
+  top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5); /* overlay */
+  object-fit: cover;
+  z-index: -2; /* behind everything */
+}
+
+/* Optional dark overlay for readability */
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: -1; /* between video and content */
 }
 
 .hero-content {
   position: relative;
   z-index: 1;
   max-width: 600px;
-  width: 100%;
   margin: 0 auto;
 }
+
 
 /* ✅ Profile Image */
 .hero-img {
@@ -197,13 +207,21 @@ footer a {
 <body>
 
  <section class="hero">
+  <video autoplay muted loop playsinline class="hero-video">
+    <source src="{{ asset('storage/background.mp4') }}" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="hero-overlay"></div>
+
   <div class="hero-content">
     <img src="{{ asset('storage/profile.jpg') }}" alt="M.Azam" class="hero-img">
     <h1>Hi, I'm <span>M.Azam</span></h1>
     <p>Front-End & Back-End Web Developer | PHP & Laravel</p>
-    <a href="#contact" class="btn">Hire Me</a>
+    <a href="#contact" class="btn btn-warning">Hire Me</a>
   </div>
 </section>
+
 
 
   <section id="about">
