@@ -1,37 +1,37 @@
-# Use official PHP image with extensions
-FROM php:8.2-fpm
+# Use official PHP image with Apache
+FROM php:8.2-apache
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Install system dependencies
+# Install required system packages and PHP extensions
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    zip \
+    libpq-dev \
     unzip \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+    git \
+    && docker-php-ext-install pdo pdo_pgsql \
+    && a2enmod rewrite \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install Composer
-COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
+# Copy composer from official image
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copy the project files into container
+# Copy all project files to container
 COPY . .
 
-# Install PHP dependencies (including vendor)
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Set correct permissions for Laravel
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
+# Copy default Apache config
+COPY ./docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
-# Expose port 8000
-EXPOSE 8000
+# Set proper permissions for Laravel storage
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Run Laravel with built-in server
-CMD php artisan serve --host=0.0.0.0 --port=8000
+# Expose port 80
+EXPOSE 80
+
+# Run Apache server
+CMD ["apache2-foreground"]
+
