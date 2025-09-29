@@ -4,7 +4,7 @@ FROM php:8.2-apache
 # Set working directory
 WORKDIR /var/www/html
 
-# Install required system packages and PHP extensions
+# Install system packages and PHP extensions (PostgreSQL + Laravel needs)
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     unzip \
@@ -13,25 +13,24 @@ RUN apt-get update && apt-get install -y \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy composer from official image
+# Copy composer from official composer image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copy all project files to container
+# Copy project files to container
 COPY . .
 
-# Install PHP dependencies
+# Install PHP dependencies without dev packages
 RUN composer install --no-dev --optimize-autoloader
 
-# Copy default Apache config
+# Copy your Apache VirtualHost configuration
 COPY ./docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
-# Set proper permissions for Laravel storage
+# Set permissions for Laravel storage and cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port 80
 EXPOSE 80
 
-# Run Apache server
+# Start Apache server
 CMD ["apache2-foreground"]
-
