@@ -34,3 +34,9 @@ EXPOSE 80
 
 # Start Apache server
 CMD ["apache2-foreground"]
+
+# Run Laravel setup tasks after container build
+RUN php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan key:generate && \
+    php artisan migrate --force || true
