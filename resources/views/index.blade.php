@@ -10,7 +10,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
-    /* Your existing styles remain the same */
     * { margin:0; padding:0; box-sizing:border-box; scroll-behavior:smooth; font-family:'Poppins',sans-serif; }
     .hero { position:relative; height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; color:white; overflow:hidden; }
     .hero-video { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-2; }
@@ -39,6 +38,7 @@
 </head>
 <body>
 
+<!-- Hero Section -->
 <section class="hero">
   <video autoplay muted loop playsinline class="hero-video">
     <source src="{{ asset('background.mp4') }}" onerror="this.src='{{ asset('storage/background.mp4') }}'" type="video/mp4">
@@ -55,6 +55,53 @@
   </div>
 </section>
 
+<!-- About Section -->
+<section id="about">
+  <h2 class="section-title">About Me</h2>
+  <p>
+   I’m a passionate Web Developer with strong expertise in front-end and back-end technologies, specializing in HTML, CSS, Bootstrap, JavaScript, PHP, and Laravel. My focus is on building responsive, modern, and user-friendly websites that not only look great but also perform smoothly across all devices.
+
+💻 What I Do:
+
+Front-End Development: Crafting clean, pixel-perfect interfaces using HTML, CSS, Bootstrap, and JavaScript to ensure seamless user experiences.
+
+Back-End Development: Developing secure, scalable, and dynamic web applications using PHP & Laravel, including authentication systems, dashboards, and REST APIs.
+
+Database Management: Designing and integrating databases with MySQL, ensuring efficient data handling and performance optimization.
+
+Responsive Design: Building websites that are fully mobile-friendly and optimized for different screen sizes.
+
+Custom Web Solutions: Creating tailored solutions such as content management systems (CMS), e-commerce platforms, and business management systems.
+
+🚀 Why Work With Me?
+
+Strong understanding of UI/UX principles for user-centered design.
+
+Experience in developing projects from scratch to deployment.
+
+Clean, maintainable, and scalable code following best practices.
+
+Passion for learning and keeping up with the latest web technologies.
+
+Commitment to delivering projects on time and with high quality.
+
+🔧 Technologies & Tools I Use:
+
+Languages: HTML5, CSS3, JavaScript (ES6+), PHP
+
+Frameworks/Libraries: Bootstrap, Laravel
+
+Database: MySQL
+
+Version Control: Git & GitHub
+
+Deployment: Render, Netlify, and shared hosting servers
+
+🌟 Whether you need a personal portfolio website, a business website, or a custom web application, I can help bring your ideas to life with modern, secure, and efficient solutions.
+  </p>
+</section>
+
+<!-- Portfolio Section -->
 <section id="portfolio">
   <h2 class="section-title">My Projects</h2>
   <div class="container">
@@ -86,6 +133,69 @@
   </div>
 </section>
 
+<!-- Services Section -->
+<section id="services">
+  <h2 class="section-title">Services</h2>
+  <div class="container">
+    <div class="row g-4 text-center">
+      <div class="col-md-4">
+        <div class="service-box">
+          <i class="bi bi-laptop"></i>
+          <h5>Front-End Development</h5>
+          <p>Modern, responsive websites using HTML, CSS, Bootstrap, and JavaScript.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="service-box">
+          <i class="bi bi-code-slash"></i>
+          <h5>Back-End Development</h5>
+          <p>Secure, scalable web applications with PHP & Laravel framework.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="service-box">
+          <i class="bi bi-bug"></i>
+          <h5>Bug Fixing</h5>
+          <p>Debugging and fixing issues in your existing website or application.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact">
+  <h2 class="section-title">Contact Me</h2>
+  <div class="container">
+    <form class="contact-form">
+      <div class="mb-3">
+        <input type="text" class="form-control" placeholder="Your Name" required>
+      </div>
+      <div class="mb-3">
+        <input type="email" class="form-control" placeholder="Your Email" required>
+      </div>
+      <div class="mb-3">
+        <textarea class="form-control" rows="4" placeholder="Your Message" required></textarea>
+      </div>
+      <button class="btn btn-primary w-100">Send Message</button>
+    </form>
+  </div>
+</section>
+
+
+<div class="text-center my-4">
+  <a href="{{ route('contact.pin') }}" class="position-relative text-decoration-none">
+    <i class="bi bi-envelope-fill" style="font-size:36px; color:#0d6efd;"></i>
+    @if($unreadCount > 0)
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        {{ $unreadCount }}
+      </span>
+    @endif
+  </a>
+</div>
+
+
+<!-- Footer -->
 <footer>
   <div class="mb-3">
     <a href="https://www.fiverr.com/sellers/muhammadazam406/edit" target="_blank" class="mx-2 text-decoration-none">

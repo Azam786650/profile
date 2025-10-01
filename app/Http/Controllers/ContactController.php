@@ -63,4 +63,9 @@ class ContactController extends Controller
         session()->forget('mailbox_verified');
         return redirect()->route('contact.pin')->with('success', 'Mailbox locked successfully!');
     }
+    public static function unreadCount()
+{
+    return \App\Models\Contact::where('is_read', 0)->count();
+}
+
 }
