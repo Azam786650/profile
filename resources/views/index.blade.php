@@ -185,7 +185,7 @@ Deployment: Render, Netlify, and shared hosting servers
 
 <div class="text-center my-4">
   <a href="{{ route('contact.pin') }}" class="position-relative text-decoration-none">
-    <i class="bi bi-envelope-fill" style="font-size:36px; color:#0d6efd;"></i>
+    <i class="bi bi-envelope-fill" style="font-size:48px; color:#0d6efd;"></i>
     @if($unreadCount > 0)
       <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
         {{ $unreadCount }}
