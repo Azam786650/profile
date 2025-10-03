@@ -30,8 +30,29 @@
     .service-box{background:white;padding:30px;border-radius:15px;box-shadow:0 8px 20px rgba(0,0,0,0.15);transition:.3s;text-align:center;}
     .service-box i{font-size:40px;color:#2a5298;margin-bottom:15px;}
     .service-box:hover{transform:translateY(-10px);}
-    #contact{background-color:#fff;}
-    .contact-form{max-width:600px;margin:auto;padding:30px;border-radius:15px;background:#f9f9f9;box-shadow:0 8px 20px rgba(0,0,0,0.1);}
+      .contact-section {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .social-links a img {
+      height: 50px;
+      width: 50px;
+      margin: 0 12px;
+      transition: transform 0.2s;
+    }
+    .social-links a img:hover {
+      transform: scale(1.1);
+    }
+    @media (max-width: 576px) {
+  .social-links a img {
+    height: 40px;
+    width: 40px;
+    margin: 0 8px;
+  }
+}
+
     footer{background:#111;color:#aaa;padding:20px 0;text-align:center;margin-top:30px;}
     footer a{color:#ffd700;text-decoration:none;}
   </style>
@@ -51,7 +72,7 @@
     <img src="{{ asset('profile.jpg') }}" onerror="this.src='{{ asset('storage/profile.jpg') }}'" alt="M.Azam" class="hero-img">
     <h1>Hi, I'm <span>M.Azam</span></h1>
     <p>Front-End & Back-End Web Developer | PHP & Laravel</p>
-    <a href="#contact" class="btn btn-warning">Hire Me</a>
+    <a href="#contact" class="btn btn-warning">Contact Me</a>
   </div>
 </section>
 
@@ -162,50 +183,43 @@ Deployment: Render, Netlify, and shared hosting servers
     </div>
   </div>
 </section>
-
+  
 <!-- Contact Section -->
-<section id="contact">
-  <h2 class="section-title">Contact Me</h2>
-  <div class="container">
-    <form class="contact-form">
-      <div class="mb-3">
-        <input type="text" class="form-control" placeholder="Your Name" required>
-      </div>
-      <div class="mb-3">
-        <input type="email" class="form-control" placeholder="Your Email" required>
-      </div>
-      <div class="mb-3">
-        <textarea class="form-control" rows="4" placeholder="Your Message" required></textarea>
-      </div>
-      <button class="btn btn-primary w-100">Send Message</button>
-    </form>
+
+<div class="contact-section">
+  <div class="text-center">
+    <h2 class="mb-4 fw-bold">Connect With Me</h2>
+    <div class="social-links d-flex justify-content-center">
+      
+      <!-- Fiverr -->
+      <a href="https://www.fiverr.com/muhammadazam406" target="_blank">
+        <img src="{{ asset('Fiverr.jpg') }}" onerror="this.src='{{ asset('storage/Fiverr.png') }}'" alt="Fiverr">
+      </a>
+
+      <!-- Facebook -->
+      <a href="https://www.facebook.com/profile.php?id=100006992227413" target="_blank">
+        <img src="{{ asset('Facebook.jpg') }}" onerror="this.src='{{ asset('storage/Facebook.png') }}'" alt="Facebook">
+      </a>
+
+      <!-- Instagram -->
+      <a href="https://www.instagram.com/azmee0/" target="_blank">
+        <img src="{{ asset('Instagram.jpg') }}" onerror="this.src='{{ asset('storage/Instagram.png') }}'" alt="Instagram">
+      </a>
+
+      <!-- LinkedIn -->
+      <a href="https://www.linkedin.com/public-profile/settings?trk=d_flagship3_profile_self_view_public_profile" target="_blank">
+        <img src="{{ asset('Linkedin.jpg') }}" onerror="this.src='{{ asset('storage/Linkedin.png') }}'" alt="LinkedIn">
+      </a>
+
+    </div>
   </div>
-</section>
-
-
-<div class="text-center my-4">
-  <a href="{{ route('contact.pin') }}" class="position-relative text-decoration-none">
-    <i class="bi bi-envelope-fill" style="font-size:36px; color:#0d6efd;"></i>
-    @if($unreadCount > 0)
-      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-        {{ $unreadCount }}
-      </span>
-    @endif
-  </a>
 </div>
-
 
 <!-- Footer -->
 <footer>
-  <div class="mb-3">
-    <a href="https://www.fiverr.com/sellers/muhammadazam406/edit" target="_blank" class="mx-2 text-decoration-none">
-      <img src="{{ asset('fiverr.png') }}" onerror="this.src='{{ asset('storage/fiverr.png') }}'" alt="Fiverr" style="height:24px;">
-    </a>
-    <a href="https://www.upwork.com/freelancers/~010cdfa67351e6dc9b" target="_blank" class="mx-2 text-decoration-none">
-      <img src="{{ asset('upwork.png') }}" onerror="this.src='{{ asset('storage/upwork.png') }}'" alt="Upwork" style="height:24px;">
-    </a>
-  </div>
-  <p>© 2025 M.Azam | Web Developer | <a href="#contact">Hire Me</a></p>
+  
+  <p>© 2025 M.Azam | Web Developer | <a href="mailto:azam07316@gmail.com">E-mail: azam07316@gmail.com</a>
+</p>
 </footer>
 
 </body>
