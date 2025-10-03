@@ -10,6 +10,13 @@ class ContactController extends Controller
     // Store Contact Form Messages
     public function store(Request $request)
     {
+        // ✅ Validate inputs
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|max:150',
+            'message' => 'required|string|max:1000',
+        ]);
+
         Contact::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -23,7 +30,7 @@ class ContactController extends Controller
     // Show Inbox (Protected by PIN)
     public function inbox()
     {
-        // Check if mailbox is unlocked
+        // ✅ Check if mailbox is unlocked
         if (!session('mailbox_verified')) {
             return redirect()->route('contact.pin');
         }
@@ -31,7 +38,6 @@ class ContactController extends Controller
         // Fetch messages
         $messages = Contact::latest()->get();
 
-        // ✅ Do NOT mark them read here!
         return view('mailbox', compact('messages'));
     }
 
@@ -57,15 +63,25 @@ class ContactController extends Controller
         return back()->with('success', 'Message marked as read.');
     }
 
+    // ✅ Delete a message
+    public function destroy($id)
+    {
+        $msg = Contact::findOrFail($id);
+        $msg->delete();
+
+        return back()->with('success', 'Message deleted successfully!');
+    }
+
     // Logout & Lock Mailbox
     public function logout()
     {
         session()->forget('mailbox_verified');
         return redirect()->route('contact.pin')->with('success', 'Mailbox locked successfully!');
     }
-    public static function unreadCount()
-{
-    return \App\Models\Contact::where('is_read', 0)->count();
-}
 
+    // Count unread messages (for badge in navbar, etc.)
+    public static function unreadCount()
+    {
+        return Contact::where('is_read', 0)->count();
+    }
 }

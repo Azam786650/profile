@@ -50,6 +50,22 @@
         .btn-lock:hover {
             background-color: #b02a37;
         }
+        .btn-home {
+            background-color: #198754;
+            border: none;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .btn-home:hover {
+            background-color: #146c43;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
@@ -58,10 +74,25 @@
     <!-- Mailbox Header -->
     <div class="mailbox-header">
         <h2><i class="bi bi-envelope-fill mailbox-icon"></i> Your Mailbox</h2>
-        <a href="{{ route('contact.logout') }}" class="btn btn-lock">
-            <i class="bi bi-lock-fill"></i> Lock Mailbox
-        </a>
+        <div class="action-buttons">
+            <!-- Back to Home -->
+            <a href="{{ url('/') }}" class="btn btn-home">
+                <i class="bi bi-house-door-fill"></i> Home
+            </a>
+            <!-- Lock Mailbox -->
+            <a href="{{ route('contact.logout') }}" class="btn btn-lock">
+                <i class="bi bi-lock-fill"></i> Lock Mailbox
+            </a>
+        </div>
     </div>
+
+    <!-- Flash messages -->
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
 
     <!-- Messages Table -->
     <div class="card shadow-sm border-0">
@@ -75,24 +106,33 @@
                             <th>Email</th>
                             <th>Message</th>
                             <th>Date</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-    @forelse($messages as $msg)
-        <tr class="{{ $msg->is_read ? '' : 'unread' }}">
-            <td>{{ $msg->id }}</td>
-            <td>{{ $msg->name }}</td>
-            <td>{{ $msg->email }}</td>
-            <td>{{ $msg->message }}</td>
-            <td>{{ $msg->created_at->format('d M Y') }}</td>
-        </tr>
-    @empty
-        <tr>
-            <td colspan="5" class="text-center text-muted">📭 No messages found</td>
-        </tr>
-    @endforelse
-</tbody>
-
+                        @forelse($messages as $msg)
+                            <tr class="{{ $msg->is_read ? '' : 'unread' }}">
+                                <td>{{ $msg->id }}</td>
+                                <td>{{ $msg->name }}</td>
+                                <td>{{ $msg->email }}</td>
+                                <td>{{ $msg->message }}</td>
+                                <td>{{ $msg->created_at->format('d M Y') }}</td>
+                                <td>
+                                    <form action="{{ route('contact.destroy', $msg->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this message?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash-fill"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">📭 No messages found</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
                 </table>
             </div>
         </div>
